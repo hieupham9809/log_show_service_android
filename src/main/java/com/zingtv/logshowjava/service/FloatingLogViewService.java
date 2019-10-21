@@ -50,6 +50,9 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.zingtv.logshowjava.logconstant.LogConstant.MIN_HEIGHT_SIZE;
+import static com.zingtv.logshowjava.logconstant.LogConstant.MIN_WIDTH_SIZE;
+
 public class FloatingLogViewService extends Service {
     private WindowManager mWindowManager;
     private View mFloatingView;
@@ -98,7 +101,6 @@ public class FloatingLogViewService extends Service {
 
     public int startSelf(Context context, String path){
 
-        FloatingLogViewService.setHtmlParserAdapter(new ZingTVHtmlParser());
         Intent intent = new Intent(context, FloatingLogViewService.class);
         /* Send path, for example: /storage/emulated/0/Android/data/com.example.logshowjava/files/Documents/showlog/30-09-2019.html */
         intent.putExtra("path",path);
@@ -302,12 +304,17 @@ public class FloatingLogViewService extends Service {
             @Override
             public void OnScale(int dx, int dy) {
 
-                params.width += dx;
-                params.height -= dy;
+                params.width = (params.width + dx < MIN_WIDTH_SIZE && dx < 0) ? MIN_WIDTH_SIZE :params.width + dx;
+                params.height = (params.height - dy < MIN_HEIGHT_SIZE && dy > 0) ? MIN_HEIGHT_SIZE : params.height - dy;
 
                 old_width = params.width;
                 old_height = params.height;
 
+                if (params.width <= MIN_WIDTH_SIZE){
+                    filterEditText.setVisibility(View.GONE);
+                } else {
+                    filterEditText.setVisibility(View.VISIBLE);
+                }
                 mWindowManager.updateViewLayout(mFloatingView, params);
 
             }

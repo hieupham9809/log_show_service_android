@@ -95,19 +95,18 @@
                     android:focusableInTouchMode="true" />
                 <TextView
                     android:id="@+id/priority_tv"
-                    android:layout_width="35dp"
+                    android:layout_width="45dp"
                     android:textSize="15sp"
                     android:text="demo"
                     android:gravity="bottom"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:paddingBottom="5dp"
-                    android:layout_weight="0.2"/>
+                    />
                 <Spinner
                     android:id="@+id/priority_spinner"
-                    android:layout_width="20dp"
+                    android:layout_width="30dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.1"
                     android:layout_gravity="bottom"
                     android:spinnerMode="dropdown"
                     android:focusable="true"

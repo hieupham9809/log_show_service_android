@@ -240,7 +240,7 @@ public class DragLayout extends RelativeLayout {
             mainView.layout(
                     left,
                     top ,
-                    ((mainView.getRight() - 100 < mainView.getLeft()) && dx < 0)? mainView.getRight(): right - 100,
+                    right - 100,
                     top + 100
             );
             scrollView.layout(
