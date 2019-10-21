@@ -3,7 +3,7 @@
 
 #### 1. Clone toàn bộ repository về, giải nén và đổi tên folder chứa src và các file liên quan thành "logshowjava"
 
-#### 2. Import dưới dạng module:
+#### 2. Import dưới dạng module, chọn đường dẫn đến folder vừa rồi:
 ![alt text](img_intro/5.png)
 
 #### 3. Vào gradle (Module:app) add dependency sau vào sau đó Sync lại project:
