@@ -21,6 +21,7 @@ public class DragLayout extends RelativeLayout {
     private LinearLayout mainView;
     private LinearLayout tvWrapper;
     private TextView tv;
+    private TextView modeTv;
     private ScrollView scrollView;
     private View scaleZone;
 
@@ -61,6 +62,7 @@ public class DragLayout extends RelativeLayout {
         scaleZone = findViewById(R.id.scale_zone);
         scrollView = findViewById(R.id.scroll_view);
         tvWrapper = findViewById(R.id.tv_wrapper);
+        modeTv = findViewById(R.id.priority_tv);
         tv = findViewById(R.id.tv);
         tv.setTextIsSelectable(true);
         tv.setOnLongClickListener(new View.OnLongClickListener(){
@@ -204,7 +206,7 @@ public class DragLayout extends RelativeLayout {
         }else {
             tvWrapper.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         }
-        if (isViewHit(mainView, (int)ev.getX(), (int)ev.getY())) {
+        if (isViewHit(mainView, (int)ev.getX(), (int)ev.getY()) || isViewHit(modeTv, (int)ev.getX(), (int)ev.getY())) {
             return mDragHelper.shouldInterceptTouchEvent(ev);
         } else {
 
