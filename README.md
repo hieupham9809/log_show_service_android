@@ -28,7 +28,7 @@
 
 ![alt text](img_intro/9.png)
 
-+ icon ô vuông để dừng hoặc tiếp tục stream log (real time)
++ icon ô vuông và tam giác (stop & play) để dừng hoặc tiếp tục stream log (real time)
 
 + icon X để toggle về floating window
 
