@@ -37,7 +37,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.zingtv.logshowjava.R;
-import com.zingtv.logshowjava.parser.BaseHtmlParser;
+
+import com.zingtv.logshowjava.parser.HtmlIParser;
 import com.zingtv.logshowjava.parser.ZingTVHtmlParser;
 import com.zingtv.logshowjava.view.DragLayout;
 
@@ -89,7 +90,7 @@ public class FloatingLogViewService extends Service {
     private boolean isMoving = false;
     WindowManager.LayoutParams params;
 
-    private static BaseHtmlParser htmlParser;
+    public static HtmlIParser htmlParser;
 
     private Timer timer;
 
@@ -99,16 +100,17 @@ public class FloatingLogViewService extends Service {
     public FloatingLogViewService() {
     }
 
-    public int startSelf(Context context, String path){
+    public int startSelf(Context context, String path) {
 
         Intent intent = new Intent(context, FloatingLogViewService.class);
         /* Send path, for example: /storage/emulated/0/Android/data/com.example.logshowjava/files/Documents/showlog/30-09-2019.html */
-        intent.putExtra("path",path);
+        intent.putExtra("path", path);
 
         context.startService(intent);
         return 0;
     }
-    public static void setHtmlParserAdapter(BaseHtmlParser newHtmlParser) {
+
+    public static void setHtmlParserAdapter(HtmlIParser newHtmlParser) {
         htmlParser = newHtmlParser;
     }
 
@@ -176,7 +178,7 @@ public class FloatingLogViewService extends Service {
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_log_widget, null);
         priorityTextView = mFloatingView.findViewById(R.id.priority_tv);
         prioritySpinner = mFloatingView.findViewById(R.id.priority_spinner);
-        arrayAdapterSpinner = new CustomArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1, priorityHM.keySet().toArray(new String[6]));
+        arrayAdapterSpinner = new CustomArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, priorityHM.keySet().toArray(new String[6]));
 
         arrayAdapterSpinner.setOnSelectItemListener(new CustomArrayAdapter.OnSelectItemListener() {
             @Override
@@ -205,35 +207,18 @@ public class FloatingLogViewService extends Service {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (timer != null) {
-                    timer.cancel();
-                }
 
+                loadWebViewHandler.removeCallbacks(loadWebViewRunnable);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
-                timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        loadWebViewHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadLogToWindow();
-
-                            }
-                        });
-                    }
-                }, DELAY_FILTER);
-
-
+                loadWebViewHandler.postDelayed(loadWebViewRunnable, DELAY_FILTER);
             }
         });
         loadBtn = mFloatingView.findViewById(R.id.load_btn);
-//                                webView.loadUrl("file://" + path);
-//                                webView.scrollBy(0, webView.getContentHeight() * 5);
+
         if (isWatching) {
             loadBtn.setImageResource(R.drawable.media_stop);
         } else {
@@ -246,16 +231,23 @@ public class FloatingLogViewService extends Service {
 
                     Log.d("ZINGLOGSHOW", "unset listener");
                     loadBtn.setImageResource(R.drawable.media_play);
-                    fileObserver.stopWatching();
+                    if (fileObserver != null) {
+                        fileObserver.stopWatching();
+                    } else {
+                        Log.d("ZINGLOGSHOW", "fileObserver is null");
+                    }
                     isWatching = false;
                 } else {
-                    if (!path.equals("")) {
+                    if (!TextUtils.isEmpty(path)) {
                         Log.d("ZINGLOGSHOW", "log file available, load html " + path);
 
                         loadLogToWindow();
 
-
-                        fileObserver.startWatching();
+                        if (fileObserver != null) {
+                            fileObserver.startWatching();
+                        } else {
+                            Log.d("ZINGLOGSHOW", "fileObserver is null");
+                        }
                         isWatching = true;
                         loadBtn.setImageResource(R.drawable.media_stop);
                     } else {
@@ -304,13 +296,13 @@ public class FloatingLogViewService extends Service {
             @Override
             public void OnScale(int dx, int dy) {
 
-                params.width = (params.width + dx < MIN_WIDTH_SIZE && dx < 0) ? MIN_WIDTH_SIZE :params.width + dx;
+                params.width = (params.width + dx < MIN_WIDTH_SIZE && dx < 0) ? MIN_WIDTH_SIZE : params.width + dx;
                 params.height = (params.height - dy < MIN_HEIGHT_SIZE && dy > 0) ? MIN_HEIGHT_SIZE : params.height - dy;
 
                 old_width = params.width;
                 old_height = params.height;
 
-                if (params.width <= MIN_WIDTH_SIZE){
+                if (params.width <= MIN_WIDTH_SIZE) {
                     filterEditText.setVisibility(View.GONE);
                 } else {
                     filterEditText.setVisibility(View.VISIBLE);
@@ -417,12 +409,9 @@ public class FloatingLogViewService extends Service {
 
                                 if (logTextView.getText().toString().equals("")) {
                                     loadLogToWindow();
-
-
                                 }
 
                                 if (old_height == 0 || old_width == 0) {
-
                                     params.width = 600;
                                     params.height = 450;
                                 } else {
@@ -458,6 +447,7 @@ public class FloatingLogViewService extends Service {
             e.printStackTrace();
         }
     }
+
     public void loadLogToWindow() {
 
         FileInputStream fis;
@@ -492,8 +482,6 @@ public class FloatingLogViewService extends Service {
 
                 }
             });
-
-
 
 
         } catch (Exception e) {
@@ -567,7 +555,11 @@ public class FloatingLogViewService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        fileObserver.stopWatching();
+        if (fileObserver != null) {
+            fileObserver.stopWatching();
+        } else {
+            Log.d("ZINGLOGSHOW", "fileObserver is null");
+        }
         isWatching = false;
         if (mFloatingView != null) mWindowManager.removeView(mFloatingView);
     }

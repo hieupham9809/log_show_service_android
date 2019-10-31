@@ -65,9 +65,9 @@ public class DragLayout extends RelativeLayout {
         modeTv = findViewById(R.id.priority_tv);
         tv = findViewById(R.id.tv);
         tv.setTextIsSelectable(true);
-        tv.setOnLongClickListener(new View.OnLongClickListener(){
+        tv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v){
+            public boolean onLongClick(View v) {
                 int startIndex = tv.getSelectionStart();
                 int endIndex = tv.getSelectionEnd();
                 if (startIndex > 0 && endIndex > 0) {
@@ -75,7 +75,7 @@ public class DragLayout extends RelativeLayout {
                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", copyText);
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(context, "Copied "+ copyText, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Copied " + copyText, Toast.LENGTH_SHORT).show();
 
                 } else {
                     Toast.makeText(context, "Please select again", Toast.LENGTH_SHORT).show();
@@ -96,6 +96,7 @@ public class DragLayout extends RelativeLayout {
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             requestLayout();
         }
+
         @Override
         public boolean tryCaptureView(View view, int i) {
             return (view.getId() == R.id.main_view);
@@ -109,8 +110,7 @@ public class DragLayout extends RelativeLayout {
             final int topBound = getPaddingTop();
             final int bottomBound = getHeight() - mainView.getHeight() - mainView.getPaddingBottom();
 
-            final int newTop = Math.min(Math.max(top, topBound), bottomBound);
-            return newTop;
+            return Math.min(Math.max(top, topBound), bottomBound);
         }
 
         @Override
@@ -120,11 +120,10 @@ public class DragLayout extends RelativeLayout {
             final int leftBound = getPaddingLeft();
             final int rightBound = getWidth() - mainView.getWidth();
 
-            final int newLeft = Math.min(Math.max(left, leftBound), rightBound);
-
-            return newLeft;
+            return Math.min(Math.max(left, leftBound), rightBound);
         }
     }
+
     public boolean isViewHit(View view, int x, int y) {
         int[] viewLocation = new int[2];
         view.getLocationOnScreen(viewLocation);
@@ -137,11 +136,12 @@ public class DragLayout extends RelativeLayout {
                 && screenY >= viewLocation[1]
                 && screenY < viewLocation[1] + view.getHeight();
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
 
-        if (isViewHit(scaleZone, (int)ev.getX(), (int)ev.getY())) {
+        if (isViewHit(scaleZone, (int) ev.getX(), (int) ev.getY())) {
 
             isScaling = true;
             if (scrollView.getScrollY() != 0) {
@@ -153,20 +153,20 @@ public class DragLayout extends RelativeLayout {
         }
 
 
-        if (ev.getAction() == MotionEvent.ACTION_UP && isScaling){
+        if (ev.getAction() == MotionEvent.ACTION_UP && isScaling) {
             isScaling = false;
             scrollView.scrollTo(0, currentScroll);
 
         }
-        if (isScaling){
-            if (ev.getAction() == MotionEvent.ACTION_DOWN){
+        if (isScaling) {
+            if (ev.getAction() == MotionEvent.ACTION_DOWN) {
                 x_previous = ev.getRawX();
                 y_previous = ev.getRawY();
             }
-            if (ev.getAction() == MotionEvent.ACTION_MOVE){
+            if (ev.getAction() == MotionEvent.ACTION_MOVE) {
 
-                if (listener != null){
-                    listener.OnScale((int)(ev.getRawX() - x_previous), (int)(ev.getRawY() - y_previous));
+                if (listener != null) {
+                    listener.OnScale((int) (ev.getRawX() - x_previous), (int) (ev.getRawY() - y_previous));
 
                 }
                 x_previous = ev.getRawX();
@@ -175,10 +175,10 @@ public class DragLayout extends RelativeLayout {
             mDragHelper.shouldInterceptTouchEvent(ev);
 
 
-            dx = (int)mDragHelper.getdX(ev);
-            dy = (int)mDragHelper.getdY(ev);
-            x = (int)mDragHelper.getX(ev);
-            y = (int)mDragHelper.getY(ev);
+            dx = (int) mDragHelper.getdX(ev);
+            dy = (int) mDragHelper.getdY(ev);
+            x = (int) mDragHelper.getX(ev);
+            y = (int) mDragHelper.getY(ev);
 
             requestLayout();
 
@@ -186,9 +186,7 @@ public class DragLayout extends RelativeLayout {
         }
 
 
-        boolean isHit = isViewHit(scrollView, (int) ev.getX(), (int)ev.getY());
-
-        return isHit;
+        return isViewHit(scrollView, (int) ev.getX(), (int) ev.getY());
     }
 
     @Override
@@ -200,13 +198,13 @@ public class DragLayout extends RelativeLayout {
             return false;
         }
 
-        if (isViewHit(scaleZone, (int)ev.getX(), (int)ev.getY())) {
+        if (isViewHit(scaleZone, (int) ev.getX(), (int) ev.getY())) {
             tvWrapper.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
-        }else {
+        } else {
             tvWrapper.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         }
-        if (isViewHit(mainView, (int)ev.getX(), (int)ev.getY()) || isViewHit(modeTv, (int)ev.getX(), (int)ev.getY())) {
+        if (isViewHit(mainView, (int) ev.getX(), (int) ev.getY()) || isViewHit(modeTv, (int) ev.getX(), (int) ev.getY())) {
             return mDragHelper.shouldInterceptTouchEvent(ev);
         } else {
 
@@ -219,7 +217,7 @@ public class DragLayout extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
-        if (isInitView){
+        if (isInitView) {
             mainView.layout(
                     left,
                     top,
@@ -241,12 +239,12 @@ public class DragLayout extends RelativeLayout {
 
             mainView.layout(
                     left,
-                    top ,
+                    top,
                     right - 100,
                     top + 100
             );
             scrollView.layout(
-                    mainView.getLeft() ,
+                    mainView.getLeft(),
                     mainView.getBottom(),
                     right,
                     bottom
@@ -254,7 +252,6 @@ public class DragLayout extends RelativeLayout {
             dx = 0;
             dy = 0;
         }
-
 
 
         scrollView.layout(
@@ -275,7 +272,8 @@ public class DragLayout extends RelativeLayout {
     public interface ScaleWindowListener {
         void OnScale(int dx, int dy);
     }
-    public void setScaleWindowListener(ScaleWindowListener listener){
+
+    public void setScaleWindowListener(ScaleWindowListener listener) {
         this.listener = listener;
     }
 }

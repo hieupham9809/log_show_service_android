@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ZingTVHtmlParser extends BaseHtmlParser {
+public class ZingTVHtmlParser implements HtmlIParser {
     @Override
     public String read(String raw) {
         String[] listPtag = raw.split("</p>");
