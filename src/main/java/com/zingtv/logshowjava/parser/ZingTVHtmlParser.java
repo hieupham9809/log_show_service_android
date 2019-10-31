@@ -21,7 +21,12 @@ public class ZingTVHtmlParser implements HtmlIParser {
             if (matcher.find()){
                 priority = matcher.group(2);
             }
+
+            if (TextUtils.isEmpty(priority)){
+                priority = "2";
+            }
             newP += "priority=\""+priority+"\">";
+
             switch (Integer.parseInt(priority)){
                 case Log.ERROR:
                     textColor = "#E74C3C";
@@ -38,7 +43,6 @@ public class ZingTVHtmlParser implements HtmlIParser {
             priorityPattern = Pattern.compile("(<strong(.+)\">)(.*)(</strong><)(.*)");
             matcher = priorityPattern.matcher(listPtag[i]);
             if (matcher.find()){
-                Log.d("ZINGLOGSHOW",""+matcher.group(3));
 
                 newP += "<small>"+matcher.group(3).replace("&nbsp&nbsp"," &nbsp ")
                         +"</small><"+ matcher.group(5).replace("&nbsp&nbsp"," &nbsp ");
@@ -49,7 +53,6 @@ public class ZingTVHtmlParser implements HtmlIParser {
             }
 
             newP += "</font>";
-            Log.d("ZINGLOGSHOW",""+newP);
 
             listPtag[i] = newP;
 

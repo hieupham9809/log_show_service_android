@@ -39,7 +39,6 @@ import android.widget.TextView;
 import com.zingtv.logshowjava.R;
 
 import com.zingtv.logshowjava.parser.HtmlIParser;
-import com.zingtv.logshowjava.parser.ZingTVHtmlParser;
 import com.zingtv.logshowjava.view.DragLayout;
 
 import java.io.File;
@@ -48,8 +47,6 @@ import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.zingtv.logshowjava.logconstant.LogConstant.MIN_HEIGHT_SIZE;
 import static com.zingtv.logshowjava.logconstant.LogConstant.MIN_WIDTH_SIZE;
@@ -91,8 +88,6 @@ public class FloatingLogViewService extends Service {
     WindowManager.LayoutParams params;
 
     public static HtmlIParser htmlParser;
-
-    private Timer timer;
 
     private final long DELAY_FILTER = 1000;
 
@@ -193,7 +188,7 @@ public class FloatingLogViewService extends Service {
 
 
         prioritySpinner.setAdapter(arrayAdapterSpinner);
-        prioritySpinner.setSelection(arrayAdapterSpinner.getPosition("Debug"));
+        prioritySpinner.setSelection(arrayAdapterSpinner.getPosition("Verbose"));
         priorityTextView.setText(prioritySpinner.getSelectedItem().toString());
 
 
@@ -486,7 +481,6 @@ public class FloatingLogViewService extends Service {
 
         } catch (Exception e) {
             Log.d("ZINGLOGSHOW", "error reading file " + e.getMessage());
-
         }
     }
 
